@@ -2,12 +2,12 @@
 
 > React hook for using **self-correcting** `setInterval`, augmented by management methods (start, stop, isActive)
 
-![Travis (.org)](https://img.shields.io/travis/minwork/use-long-press)
-![Codecov](https://img.shields.io/codecov/c/gh/minwork/use-long-press)
-![npm type definitions](https://img.shields.io/npm/types/use-long-press)
-![npm bundle size](https://img.shields.io/bundlephobia/min/use-long-press)
-![npm](https://img.shields.io/npm/v/use-long-press)
-![GitHub](https://img.shields.io/github/license/minwork/use-long-press)
+![Travis (.org)](https://img.shields.io/travis/minwork/react-interval-hook)
+![Codecov](https://img.shields.io/codecov/c/gh/minwork/react-interval-hook)
+![npm type definitions](https://img.shields.io/npm/types/react-interval-hook)
+![npm bundle size](https://img.shields.io/bundlephobia/min/react-interval-hook)
+![npm](https://img.shields.io/npm/v/react-interval-hook)
+![GitHub](https://img.shields.io/github/license/minwork/react-interval-hook)
 
 -   Self-correcting ([explanation](https://stackoverflow.com/a/29972322/10322539))
 -   Manageable (start, stop, isActive)
