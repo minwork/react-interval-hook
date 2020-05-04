@@ -50,6 +50,8 @@ useInterval(callback [, intervalMs] [, options]): { start, stop, isActive }
 
 ### Example
 
+[![Edit react-interval-hook](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/react-interval-hook-bi0kx?fontsize=14&hidenavigation=1&theme=dark)
+
 ```typescript jsx
 import React, { useState } from 'react';
 import { useInterval } from 'react-interval-hook';
