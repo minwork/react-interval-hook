@@ -61,7 +61,7 @@ const AdvancedExample = () => {
         },
         500,
         {
-            autoStart: true,
+            autoStart: false,
             immediate: false,
             onFinish: () => {
                 console.log('Callback when timer is stopped');
@@ -88,6 +88,7 @@ const AdvancedExample = () => {
                     <input
                         id="trigger-finish-callback"
                         type="checkbox"
+                        defaultChecked={triggerFinishCallback}
                         onChange={() => setTriggerFinishCallback(current => !current)}
                     />
                     Trigger finish callback
