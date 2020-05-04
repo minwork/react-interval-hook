@@ -87,6 +87,9 @@ export function useInterval(
 
     const stop = useCallback(
         (triggerFinish = true) => {
+            // Save current active value
+            const isActive = active.current;
+
             if (timer.current !== undefined) {
                 clearTimeout(timer.current);
             }
@@ -94,8 +97,9 @@ export function useInterval(
             active.current = false;
             timer.current = undefined;
             expected.current = null;
-
-            triggerFinish && onFinish();
+            if (isActive && triggerFinish) {
+                onFinish();
+            }
         },
         [onFinish]
     );

@@ -95,17 +95,18 @@ describe('Check isolated hook calls', () => {
 
         expect(onFinish).toBeCalledTimes(2);
 
+        // Do not call stop if timer wasn't started
         renderHook(() =>
             useInterval(callback, 1000, { immediate: false, autoStart: false, onFinish })
         ).result.current.stop();
 
-        expect(onFinish).toBeCalledTimes(3);
+        expect(onFinish).toBeCalledTimes(2);
 
         renderHook(() =>
             useInterval(callback, 1000, { immediate: true, autoStart: false, onFinish })
         ).result.current.stop(false);
 
-        expect(onFinish).toBeCalledTimes(3);
+        expect(onFinish).toBeCalledTimes(2);
     });
 
     test('Properly return if interval is active using isActive method', () => {
@@ -153,7 +154,7 @@ describe('Check isolated hook calls', () => {
 
     test('Hook properly ignore duplicated managing method calls', () => {
         const { start, stop } = renderHook(() =>
-            useInterval(callback, 1000, { autoStart: false, immediate: false })
+            useInterval(callback, 1000, { autoStart: false, immediate: false, onFinish })
         ).result.current;
 
         expect(callback).toBeCalledTimes(0);
@@ -164,11 +165,14 @@ describe('Check isolated hook calls', () => {
         start();
         expect(callback).toBeCalledTimes(1);
 
+        expect(onFinish).toBeCalledTimes(0);
         stop();
+        expect(onFinish).toBeCalledTimes(1);
         jest.runOnlyPendingTimers();
         stop();
         stop();
         jest.runOnlyPendingTimers();
+        expect(onFinish).toBeCalledTimes(1);
 
         expect(callback).toBeCalledTimes(1);
 
@@ -180,6 +184,7 @@ describe('Check isolated hook calls', () => {
         stop();
 
         expect(callback).toBeCalledTimes(1);
+        expect(onFinish).toBeCalledTimes(4);
 
         start();
         start();
