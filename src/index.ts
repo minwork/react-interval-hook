@@ -13,6 +13,7 @@ export interface IntervalHookOptions {
     onFinish?: IntervalHookFinishCallback;
     autoStart?: boolean;
     immediate?: boolean;
+    selfCorrecting?: boolean;
 }
 
 export type IntervalHookResult = {
@@ -24,7 +25,7 @@ export type IntervalHookResult = {
 export function useInterval(
     callback: IntervalHookCallback,
     interval = 1000,
-    { onFinish = noop, autoStart = true, immediate = false }: IntervalHookOptions = {}
+    { onFinish = noop, autoStart = true, immediate = false, selfCorrecting = true }: IntervalHookOptions = {}
 ): IntervalHookResult {
     const timer = useRef<NodeJS.Timeout>();
     const active = useRef<boolean>(false);
@@ -35,16 +36,24 @@ export function useInterval(
         /* istanbul ignore next */
         const expectedTimestamp = expected.current || 0;
 
-        // If timer has more delay than it's interval
-        const delay = Date.now() - expectedTimestamp;
-        const ticks = 1 + (delay > 0 ? Math.floor(delay / interval) : 0);
-        // Set new timeout
-        expected.current = expectedTimestamp + interval * ticks;
-        // Save timeout id
-        // eslint-disable-next-line @typescript-eslint/no-use-before-define
-        set(Math.max(interval - delay, 1));
-        // Call callback function with amount of ticks passed
-        savedCallback.current(ticks);
+        if (selfCorrecting) {
+            // If timer has more delay than it's interval
+            const delay = Date.now() - expectedTimestamp;
+            const ticks = 1 + (delay > 0 ? Math.floor(delay / interval) : 0);
+            // Set new timeout
+            expected.current = expectedTimestamp + interval * ticks;
+            // Save timeout id
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
+            set(Math.max(interval - delay, 1));
+            // Call callback function with amount of ticks passed
+            savedCallback.current(ticks);
+        } else {
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
+            set(interval);
+            // Without self correction ticks are undefined (or equivalently equal to 1)
+            savedCallback.current();
+        }
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [interval]);
 

@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { IntervalHookCallback, IntervalHookFinishCallback, useInterval } from '../src';
+import { IntervalHookCallback, IntervalHookFinishCallback, useInterval } from '.';
 
 describe('Check isolated hook calls', () => {
     let callback: IntervalHookCallback;
@@ -15,7 +15,7 @@ describe('Check isolated hook calls', () => {
         jest.clearAllMocks();
     });
 
-    test('Always return object with management methods as a result', () => {
+    it('Always return object with management methods as a result', () => {
         const resultTemplate = {
             start: expect.any(Function),
             stop: expect.any(Function),
@@ -34,7 +34,7 @@ describe('Check isolated hook calls', () => {
         ).toMatchObject(resultTemplate);
     });
 
-    test('Call interval callback regularly after started and before stopped', () => {
+    it('Call interval callback regularly after started and before stopped', () => {
         const interval = 500;
         const manage = renderHook(() => useInterval(callback, interval, { autoStart: false, immediate: false }))
             .result.current;
@@ -54,14 +54,14 @@ describe('Check isolated hook calls', () => {
         expect(callback).toBeCalledTimes(3);
     });
 
-    test('Automatically starts timer when autoStart option is set to true', () => {
+    it('Automatically starts timer when autoStart option is set to true', () => {
         renderHook(() => useInterval(callback, 1000, { autoStart: true }));
 
         jest.runOnlyPendingTimers();
         expect(callback).toBeCalledTimes(1);
     });
 
-    test('Immediately call callback when immediate option and autoStart is set to true', () => {
+    it('Immediately call callback when immediate option and autoStart is set to true', () => {
         renderHook(() => useInterval(callback, 1000, { immediate: true, autoStart: true }));
 
         expect(callback).toBeCalledTimes(1);
@@ -69,7 +69,7 @@ describe('Check isolated hook calls', () => {
         expect(callback).toBeCalledTimes(2);
     });
 
-    test('Call callback after using start method when immediate option is set to true and autoStart is set to false', () => {
+    it('Call callback after using start method when immediate option is set to true and autoStart is set to false', () => {
         const { start } = renderHook(() =>
             useInterval(callback, 1000, { immediate: true, autoStart: false })
         ).result.current;
@@ -80,7 +80,7 @@ describe('Check isolated hook calls', () => {
         expect(callback).toBeCalledTimes(2);
     });
 
-    test('Call onFinish callback after using stop method (accordingly to stop method argument)', () => {
+    it('Call onFinish callback after using stop method (accordingly to stop method argument)', () => {
         renderHook(() =>
             useInterval(callback, 1000, { immediate: true, autoStart: true, onFinish })
         ).result.current.stop();
@@ -109,7 +109,7 @@ describe('Check isolated hook calls', () => {
         expect(onFinish).toBeCalledTimes(2);
     });
 
-    test('Properly return if interval is active using isActive method', () => {
+    it('Properly return if interval is active using isActive method', () => {
         const { start, stop, isActive } = renderHook(() =>
             useInterval(callback, 1000, { autoStart: false, onFinish })
         ).result.current;
@@ -125,7 +125,7 @@ describe('Check isolated hook calls', () => {
         expect(isActive()).toBe(false);
     });
 
-    test('Interval is properly self-correcting and callback is called with correct amount of ticks', () => {
+    it('Interval is properly self-correcting and callback is called with correct amount of ticks', () => {
         const { start, stop } = renderHook(() => useInterval(callback, 1000, { autoStart: false })).result.current;
 
         jest.spyOn(Date, 'now')
@@ -152,7 +152,7 @@ describe('Check isolated hook calls', () => {
         stop();
     });
 
-    test('Hook properly ignore duplicated managing method calls', () => {
+    it('Hook properly ignore duplicated managing method calls', () => {
         const { start, stop } = renderHook(() =>
             useInterval(callback, 1000, { autoStart: false, immediate: false, onFinish })
         ).result.current;
@@ -194,7 +194,7 @@ describe('Check isolated hook calls', () => {
         expect(callback).toBeCalledTimes(2);
     });
 
-    test('Hook properly ignore duplicated managing method calls when immediate option is set to true', () => {
+    it('Hook properly ignore duplicated managing method calls when immediate option is set to true', () => {
         const { start, stop } = renderHook(() =>
             useInterval(callback, 1000, { autoStart: false, immediate: true })
         ).result.current;
@@ -221,5 +221,27 @@ describe('Check isolated hook calls', () => {
         start();
         jest.runOnlyPendingTimers();
         expect(callback).toBeCalledTimes(4);
+    });
+
+    it('should not self correct and pass ticks when selfCorrecting flag is false', () => {
+        const { start, stop } = renderHook(() =>
+            useInterval(callback, 1000, { autoStart: false, selfCorrecting: false })
+        ).result.current;
+
+        start();
+        jest.runOnlyPendingTimers();
+        expect(callback).toHaveBeenCalledTimes(1);
+        expect(callback).toHaveBeenCalledWith();
+
+        jest.runOnlyPendingTimers();
+        expect(callback).toHaveBeenCalledTimes(2);
+
+        jest.runOnlyPendingTimers();
+        expect(callback).toHaveBeenCalledTimes(3);
+
+        jest.runOnlyPendingTimers();
+        expect(callback).toHaveBeenCalledTimes(4);
+
+        stop();
     });
 });

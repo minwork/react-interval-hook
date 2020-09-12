@@ -65,6 +65,7 @@ const AdvancedExample = () => {
         {
             autoStart: false,
             immediate: false,
+            selfCorrecting: false,
             onFinish: () => {
                 console.log('Callback when timer is stopped');
             },
@@ -103,11 +104,12 @@ const AdvancedExample = () => {
 
 ### Options
 
-| Name      |   Type   | Default  | Description                                                           |
-| --------- | :------: | :------: | --------------------------------------------------------------------- |
-| autoStart | boolean  |   true   | Start interval timer right after component is mounted                 |
-| immediate | boolean  |  false   | Trigger _callback_ immediately after timer is started                 |
-| onFinish  | Function | () => {} | Called after timer is stopped (by _stop_ method or component unmount) |
+| Name        |   Type   | Default  | Description                                                                                                                                                           |
+| ----------- | :------: | :------: | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| autoStart   | boolean  |   true   | Start interval timer right after component is mounted                                                                                                                 |
+| immediate   | boolean  |  false   | Trigger _callback_ immediately after timer is started                                                                                                                 |
+| selfCorrecting | boolean  |   true   | Self correct time intervals between subsequent _callback_ invocations to reflect actual time elapsed (setInterval and setTimeout are not accurate and tend to drift). |
+| onFinish    | Function | () => {} | Called after timer is stopped (by _stop_ method or component unmount)                                                                                                 |
 
 ### Management methods
 
