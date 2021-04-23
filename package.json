@@ -29,10 +29,10 @@
     "typings": "dist/index.d.ts",
     "exports": {
         ".": {
-            "browser": "dist/index.module.js",
-            "umd": "dist/index.umd.js",
-            "import": "dist/index.module.js",
-            "require": "dist/index.js"
+            "browser": "./dist/index.module.js",
+            "umd": "./dist/index.umd.js",
+            "import": "./dist/index.module.js",
+            "require": "./dist/index.js"
         }
     },
     "files": [
